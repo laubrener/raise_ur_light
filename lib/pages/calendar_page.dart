@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:raise_ur_light/models/calendar_model.dart';
-import 'package:raise_ur_light/pages/calendar_page.dart';
-import 'package:raise_ur_light/pages/jaguim_page.dart';
 import 'package:raise_ur_light/providers/calendar_provider.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class CalendarPage extends StatefulWidget {
+  const CalendarPage({Key? key}) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<CalendarPage> createState() => _CalendarPageState();
 }
 
-class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
+class _CalendarPageState extends State<CalendarPage>
+    with TickerProviderStateMixin {
   CalendarProvider calendarProvider = CalendarProvider();
 
   @override
@@ -23,7 +22,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   void _loadCalendar() async {
-    await calendarProvider.getWeeklyItems();
+    await calendarProvider.getAnualItems();
 
     setState(() {});
   }

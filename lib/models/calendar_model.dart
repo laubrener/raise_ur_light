@@ -50,13 +50,14 @@ class Item {
   final String? title;
   final dynamic date;
   final String? hdate;
-  final String? category;
-  final String? subcat;
+  final Category? category;
+  final Subcat? subcat;
   final String? hebrew;
   final String? link;
   final String? memo;
   final String? titleOrig;
   final Leyning? leyning;
+  final bool? yomtov;
 
   Item({
     this.title,
@@ -69,6 +70,7 @@ class Item {
     this.memo,
     this.titleOrig,
     this.leyning,
+    this.yomtov,
   });
 
   factory Item.fromRawJson(String str) => Item.fromJson(json.decode(str));
@@ -79,29 +81,61 @@ class Item {
         title: json["title"],
         date: json["date"],
         hdate: json["hdate"],
-        category: json["category"],
-        subcat: json["subcat"],
+        category: categoryValues.map[json["category"]],
+        subcat: subcatValues.map[json["subcat"]],
         hebrew: json["hebrew"],
         link: json["link"],
         memo: json["memo"],
         titleOrig: json["title_orig"],
         leyning:
             json["leyning"] == null ? null : Leyning.fromJson(json["leyning"]),
+        yomtov: json["yomtov"],
       );
 
   Map<String, dynamic> toJson() => {
         "title": title,
         "date": date,
         "hdate": hdate,
-        "category": category,
-        "subcat": subcat,
+        "category": categoryValues.reverse[category],
+        "subcat": subcatValues.reverse[subcat],
         "hebrew": hebrew,
         "link": link,
         "memo": memo,
         "title_orig": titleOrig,
         "leyning": leyning?.toJson(),
+        "yomtov": yomtov,
       };
 }
+
+enum Category {
+  CANDLES,
+  HAVDALAH,
+  HOLIDAY,
+  MEVARCHIM,
+  PARASHAT,
+  ROSHCHODESH,
+  ZMANIM
+}
+
+final categoryValues = EnumValues({
+  "candles": Category.CANDLES,
+  "havdalah": Category.HAVDALAH,
+  "holiday": Category.HOLIDAY,
+  "mevarchim": Category.MEVARCHIM,
+  "parashat": Category.PARASHAT,
+  "roshchodesh": Category.ROSHCHODESH,
+  "zmanim": Category.ZMANIM
+});
+
+enum Subcat { FAST, MAJOR, MINOR, MODERN, SHABBAT }
+
+final subcatValues = EnumValues({
+  "fast": Subcat.FAST,
+  "major": Subcat.MAJOR,
+  "minor": Subcat.MINOR,
+  "modern": Subcat.MODERN,
+  "shabbat": Subcat.SHABBAT
+});
 
 class Leyning {
   final String? the1;
@@ -115,6 +149,7 @@ class Leyning {
   final String? haftarah;
   final String? maftir;
   final Triennial? triennial;
+  final String? haftarahSephardic;
 
   Leyning({
     this.the1,
@@ -128,6 +163,7 @@ class Leyning {
     this.haftarah,
     this.maftir,
     this.triennial,
+    this.haftarahSephardic,
   });
 
   factory Leyning.fromRawJson(String str) => Leyning.fromJson(json.decode(str));
@@ -148,6 +184,7 @@ class Leyning {
         triennial: json["triennial"] == null
             ? null
             : Triennial.fromJson(json["triennial"]),
+        haftarahSephardic: json["haftarah_sephardic"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -162,6 +199,7 @@ class Leyning {
         "haftarah": haftarah,
         "maftir": maftir,
         "triennial": triennial?.toJson(),
+        "haftarah_sephardic": haftarahSephardic,
       };
 }
 
@@ -303,4 +341,16 @@ class Range {
         "end":
             "${end!.year.toString().padLeft(4, '0')}-${end!.month.toString().padLeft(2, '0')}-${end!.day.toString().padLeft(2, '0')}",
       };
+}
+
+class EnumValues<T> {
+  Map<String, T> map;
+  late Map<T, String> reverseMap;
+
+  EnumValues(this.map);
+
+  Map<T, String> get reverse {
+    reverseMap = map.map((k, v) => MapEntry(v, k));
+    return reverseMap;
+  }
 }
