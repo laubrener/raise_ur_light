@@ -77,6 +77,11 @@ class Item {
 
   String toRawJson() => json.encode(toJson());
 
+  String dateString() {
+    List list = date.toString().split('T');
+    return list.first;
+  }
+
   factory Item.fromJson(Map<String, dynamic> json) => Item(
         title: json["title"],
         date: json["date"],
